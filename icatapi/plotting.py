@@ -257,7 +257,7 @@ def render_neighborhood_image(stack, tileId, neighborhood=1, width=1024,
 
 
 
-def plot_tile_map(stacks, render=None):
+def plot_tile_map(stacks, render=None, **kwargs):
     """Plots tiles (as matplotlib patches) in `render-ws`
 
     Parameters
@@ -270,7 +270,7 @@ def plot_tile_map(stacks, render=None):
 
     # Create stacks DataFrame
     df_stacks = create_stacks_DataFrame(stacks=stacks,
-                                        render=render)
+                                        render=render, **kwargs)
 
     # Specify stacks and sections for plotting
     stacks_2_plot = df_stacks['stack'].unique().tolist()

@@ -208,7 +208,7 @@ def generate_point_matches(df_pairs, match_collections, sift_options, render,
                 pool.map(point_match_client_partial, zip(tp_batch, sift_options_batch))
 
 
-def get_matches_within_section(stack, sectionId, match_collection, render):
+def get_matches_within_section(stack, sectionId, match_collection, render, **kwargs):
     """Wrapper for renderapi.pointmatches.get_matches_within_group
 
     Parameters
@@ -228,18 +228,18 @@ def get_matches_within_section(stack, sectionId, match_collection, render):
     # Get z value from sectionId
     z = get_section_z_value(stack=stack,
                             sectionId=sectionId,
-                            render=render)
+                            render=render, **kwargs)
     # Get matches within section
     matches_json = get_matches_within_group(matchCollection=match_collection,
                                             groupId=sectionId,
-                                            render=render)
+                                            render=render, **kwargs)
     # Convert json data to DataFrame and add z value
     df = pd.json_normalize(matches_json)
     df['z'] = z
     return df.rename(columns={'matchCount': 'N'})
 
 
-def get_matches_within_stack(stack, match_collection, render):
+def get_matches_within_stack(stack, match_collection, render, **kwargs):
     """Collect point matches across each section in a stack
 
     Parameters
@@ -263,7 +263,7 @@ def get_matches_within_stack(stack, match_collection, render):
 
     # Get sectionIds per stack
     sectionIds = get_match_groupIds(matchCollection=match_collection,
-                                    render=render)
+                                    render=render, **kwargs)
     # Loop through sectionIds
     for sectionId in tqdm(sectionIds, leave=False):
 
@@ -271,15 +271,15 @@ def get_matches_within_stack(stack, match_collection, render):
         df = get_matches_within_section(stack=stack,
                                         sectionId=sectionId,
                                         match_collection=match_collection,
-                                        render=render)
+                                        render=render, **kwargs)
         # Aggregate matches
         df_matches = pd.concat([df_matches, df])
 
     # Format DataFrame
     df_matches['stack'] = stack
     # Add row/col indices
-    df_matches[['pc', 'pr']] = np.stack(df_matches['pId'].apply(lambda x:\
+    df_matches[['pc', 'pr']] = np.stack(df_matches['pId'].apply(lambda x:
                                         [int(i) for i in re.findall(r'\d+', x)[-2:]]))
-    df_matches[['qc', 'qr']] = np.stack(df_matches['qId'].apply(lambda x:\
+    df_matches[['qc', 'qr']] = np.stack(df_matches['qId'].apply(lambda x:
                                         [int(i) for i in re.findall(r'\d+', x)[-2:]]))
     return df_matches

@@ -14,7 +14,7 @@ from renderapi.image_pyramid import ImagePyramid, MipMapLevel
 HOST = 'https://sonic.tnw.tudelft.nl'
 
 
-def create_tile_dict(fp, d_tile=None, host=HOST):
+def create_tile_dict(fp, d_tile=None, host=HOST, **kwargs):
     """Parses Odemis OME-TIFF metadata to create a dict resembling a tile specification
 
     Parameters
@@ -138,7 +138,7 @@ def create_mipmaps(image, dir_out, metadata=None, dtype=np.uint16, invert=False,
                                preserve_range=preserve_range,
                                **pyramid_kwargs)
     # Format pyramid as dict {0: image, 1: image//2, 2: image//4}
-    d_pyramid = {level: mipmap.astype(dtype) for level, mipmap in enumerate(pyramid)}    
+    d_pyramid = {level: mipmap.astype(dtype) for level, mipmap in enumerate(pyramid)}
 
     # Write mipmaps to disk
     for level, mipmap in d_pyramid.items():

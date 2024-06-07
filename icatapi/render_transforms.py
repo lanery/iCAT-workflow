@@ -23,7 +23,7 @@ def AffineMPL_2_AffineRender(T):
 
 
 def scale_stack(stack_in, stack_out=None, sx=1.0, sy=1.0, translate=False,
-                render=None):
+                render=None, **kwargs):
     """Scale stack by an arbitrary scale factor
 
     Parameters
@@ -78,7 +78,7 @@ def scale_stack(stack_in, stack_out=None, sx=1.0, sy=1.0, translate=False,
     # Create scaled stack
     upload_stack_DataFrame(df=df_stack,
                            name=stack_out,
-                           render=render)
+                           render=render, **kwargs)
 
 
 def rotate_stack(stack_in, stack_out=None, r=0,

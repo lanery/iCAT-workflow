@@ -13,7 +13,7 @@ __all__ = ['create_stack_DataFrame',
            'upload_stack_DataFrame']
 
 
-def create_stack_DataFrame(stack, render):
+def create_stack_DataFrame(stack, render, **kwargs):
     """Create DataFrame of `TileSpec`s from a given stack
 
     Parameters
@@ -31,7 +31,7 @@ def create_stack_DataFrame(stack, render):
     # Loop through tile specifications
     tile_specs = []
     for ts in get_tile_specs_from_stack(stack=stack,
-                                        render=render):
+                                        render=render, **kwargs):
         # Convert to dict
         d_tile = ts.to_dict()
         # Adjust certain specifications
@@ -60,7 +60,7 @@ def create_stack_DataFrame(stack, render):
     return df_stack
 
 
-def create_stacks_DataFrame(stacks, render):
+def create_stacks_DataFrame(stacks, render, **kwargs):
     """Create DataFrame of `TileSpec`s from multiple stacks within a project
 
     Parameters
@@ -69,7 +69,7 @@ def create_stacks_DataFrame(stacks, render):
         List of stacks from which to generate DataFrame
     render : `renderapi.render.RenderClient`
         `render-ws` instance
-    
+
     Returns
     -------
     df_stacks : `pd.DataFrame`
@@ -79,7 +79,7 @@ def create_stacks_DataFrame(stacks, render):
     df_stacks = pd.DataFrame()
     # Create and append DataFrames from each given stack
     for stack in stacks:
-        df_stack = create_stack_DataFrame(stack, render=render)
+        df_stack = create_stack_DataFrame(stack, render=render, **kwargs)
         df_stacks = pd.concat([df_stacks, df_stack])
     return df_stacks.reset_index(drop=True)
 
@@ -91,7 +91,7 @@ def create_project_DataFrame(render):
     ----------
     render : `renderapi.render.RenderClient`
         `render-ws` instance
-    
+
     Returns
     -------
     df_project : `pd.DataFrame`
@@ -106,7 +106,7 @@ def create_project_DataFrame(render):
 def upload_stack_DataFrame(df, render, name=None,
                            stackResolutionX=None,
                            stackResolutionY=None,
-                           stackResolutionZ=None):
+                           stackResolutionZ=None, **kwargs):
     """Creates a `render-ws` stack from given DataFrame
 
     Parameters
@@ -150,11 +150,11 @@ def upload_stack_DataFrame(df, render, name=None,
     print(out)
     import_tilespecs(stack=stack,
                      tilespecs=tile_specs,
-                     render=render)
+                     render=render, **kwargs)
 
     # Close stack
     set_stack_state(stack=stack,
                     state='COMPLETE',
-                    render=render)
+                    render=render, **kwargs)
     out = f"Stack \033[1m{stack}\033[0m created successfully."
     print(out)
