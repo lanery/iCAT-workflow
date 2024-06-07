@@ -36,7 +36,6 @@ def get_transform_metadata(filepath):
 
     # Parse the transform metadata for each image in tif
     tform_md = {}
-    # print(metadata)
     for md in metadata.find_all('image'):
         if md['name'] != 'Composited image preview':
             tform_md[md['name']] = parse_transform_metadata(md)
@@ -69,12 +68,12 @@ def parse_transform_metadata(metadata):
     pixelsize = (psx, psy)
 
     # Parse out rotation matrix
-    md = metadata.Transform
+    md = metadata.transform
     if md is not None:
-        A00 = float(md['A00'])  # /         \
-        A01 = float(md['A01'])  # | a00  a01 |
-        A10 = float(md['A10'])  # | a10  a11 |
-        A11 = float(md['A11'])  # \         /
+        A00 = float(md['a00'])  # /         \
+        A01 = float(md['a01'])  # | a00  a01 |
+        A10 = float(md['a10'])  # | a10  a11 |
+        A11 = float(md['a11'])  # \         /
         # QR decomposition into Rotation and Scale matrices
         A = np.array([[A00, A10],
                       [A01, A11]])
